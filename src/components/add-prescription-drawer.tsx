@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { useIsMobile } from "@/hooks/use-mobile"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Drawer,
   DrawerClose,
@@ -22,30 +22,29 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import type { Patient } from "./medical_records"
-import { useAuth } from "@/auth/authprovider"
+} from "@/components/ui/drawer";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import type { Patient } from "./medical_records";
+import { useAuth } from "@/auth/authprovider";
 
-import { AddPrescription } from "./add-prescription"
+import { AddPrescription } from "./add-prescription";
 
 type PrescriptionDrawerProps = {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  patient: Patient
-}
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  patient: Patient;
+};
 
 export function PrescriptionDrawer({
   open,
   onOpenChange,
   patient,
 }: PrescriptionDrawerProps) {
+  const { user } = useAuth();
+  const [fields, setFields] = React.useState(patient);
 
-  const { user } = useAuth()
-  const [fields, setFields] = React.useState(patient)
-    
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
   if (!isMobile) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -53,24 +52,26 @@ export function PrescriptionDrawer({
           <DialogHeader>
             <DialogTitle>Add Prescription</DialogTitle>
             <DialogDescription>
-              Create A Prescription for you&apos;re patient herte. Click save when you&apos;re done.
+              Create A Prescription for you&apos;re patient herte. Click save
+              when you&apos;re done.
             </DialogDescription>
           </DialogHeader>
           <div className="max-h-[70vh] overflow-y-auto pr-2">
-          <AddPrescription patient={{
-            patientId: patient.id,
-            firstName: patient.firstName,
-            lastName: patient.lastName,
-            gender: patient.gender,
-            age: patient.age,
-            address:patient.address,
-            
-           
-          }} />
+            <AddPrescription
+              patient={{
+                patientId: patient.id,
+                firstName: patient.firstName,
+                lastName: patient.lastName,
+                gender: patient.gender,
+                age: patient.age,
+                address: patient.address,
+                patientDiagnosis: patient.patientDiagnosis ?? [],
+              }}
+            />
           </div>
         </DialogContent>
       </Dialog>
-    )
+    );
   }
 
   return (
@@ -79,18 +80,21 @@ export function PrescriptionDrawer({
         <DrawerHeader className="text-left">
           <DrawerTitle>Add Prescription</DrawerTitle>
           <DrawerDescription>
-            Create A Prescription for you&apos;re patient herte. Click save when you&apos;re done.
+            Create A Prescription for you&apos;re patient herte. Click save when
+            you&apos;re done.
           </DrawerDescription>
         </DrawerHeader>
-        <AddPrescription patient={{
+        <AddPrescription
+          patient={{
             patientId: patient.id,
             firstName: patient.firstName,
             lastName: patient.lastName,
             gender: patient.gender,
             age: patient.age,
             address: patient.address,
-            
-          }}/>
+            patientDiagnosis: patient.patientDiagnosis ?? [],
+          }}
+        />
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>
@@ -98,7 +102,7 @@ export function PrescriptionDrawer({
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  )
+  );
 }
 // function ProfileForm({ className }: React.ComponentProps<"form">) {
 //   return (

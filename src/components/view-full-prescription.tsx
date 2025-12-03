@@ -1,57 +1,64 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import type { Prescription } from "./view-prescriptions"
-import html2canvas from "html2canvas-pro"
-import { db } from "@/firebaseConfig"
-import { ref, set, push } from "firebase/database"
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import type { Prescription } from "./view-prescriptions";
+import html2canvas from "html2canvas-pro";
+import { db } from "@/firebaseConfig";
+import { ref, set, push } from "firebase/database";
 
-import { useAuth } from "@/auth/authprovider"
+import { useAuth } from "@/auth/authprovider";
 
 type EditPrescriptionProps = {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  patient: Prescription
-}
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  patient: Prescription;
+};
 
-export function ViewFullPrescription({ patient: prescription, onOpenChange }: EditPrescriptionProps) {
-  const { user } = useAuth()
-  const [fields, setFields] = useState(prescription)
-  const [drugs, setDrugs] = useState(prescription.drugs || [])
-  const printRef = useRef<HTMLDivElement>(null)
+export function ViewFullPrescription({
+  patient: prescription,
+  onOpenChange,
+}: EditPrescriptionProps) {
+  const { user } = useAuth();
+  const [fields, setFields] = useState(prescription);
+  const [drugs, setDrugs] = useState(prescription.drugs || []);
+  const [diagnosis, setDiagnosis] = useState(prescription.diagnosis || []);
+  const printRef = useRef<HTMLDivElement>(null);
 
-  const logsRef = ref(db,'logs/')
-  const updateLog = async () =>{
-    const newLog = push(logsRef)
-     await set(newLog, {
-            prescriptionLog:`Prescription ${fields.id} ${fields.patientFirstName} ${fields.patientLastName} downloaded by ${user?.firstName} ${user?.lastName} `,
-            logTime: new Date().toLocaleString(),
-          })
-
-  }
+  const logsRef = ref(db, "logs/");
+  const updateLog = async () => {
+    const newLog = push(logsRef);
+    await set(newLog, {
+      prescriptionLog: `Prescription ${fields.id} ${fields.patientFirstName} ${fields.patientLastName} downloaded by ${user?.firstName} ${user?.lastName} `,
+      logTime: new Date().toLocaleString(),
+    });
+  };
 
   useEffect(() => {
-    setFields(prescription)
-    setDrugs(prescription.drugs || [])
-  }, [prescription])
+    setFields(prescription);
+    setDrugs(prescription.drugs || []);
+  }, [prescription]);
 
   const handleDownloadImage = async () => {
-    if (!printRef.current) return
+    if (!printRef.current) return;
 
-    const canvas = await html2canvas(printRef.current, { scale: 2 })
-    const imgData = canvas.toDataURL("image/png")
+    const canvas = await html2canvas(printRef.current, {
+      scale: 2,
+      scrollY: -window.scrollY,
+      useCORS: true,
+      windowWidth: document.documentElement.scrollWidth,
+    });
+    const imgData = canvas.toDataURL("image/png");
 
-    const link = document.createElement("a")
-    link.href = imgData
-    link.download = `${fields.patientFirstName}_${fields.patientLastName}_Prescription.png`
-    link.click()
-    updateLog()
-  }
+    const link = document.createElement("a");
+    link.href = imgData;
+    link.download = `${fields.patientFirstName}_${fields.patientLastName}_Prescription.png`;
+    link.click();
+    updateLog();
+  };
 
   return (
     <div className="flex flex-col gap-4">
-     
       <div
         ref={printRef}
         className="p-8 bg-white border border-gray-300 shadow-lg w-full max-w-4xl h-[80vh] mx-auto font-serif text-black overflow-y-auto"
@@ -69,7 +76,9 @@ export function ViewFullPrescription({ patient: prescription, onOpenChange }: Ed
           </div>
           <div>
             <span className="font-semibold">Age/Sex: </span>
-            <span className="underline">{fields.patientAge} / {fields.patientGender}</span>
+            <span className="underline">
+              {fields.patientAge} / {fields.patientGender}
+            </span>
           </div>
         </div>
 
@@ -84,18 +93,24 @@ export function ViewFullPrescription({ patient: prescription, onOpenChange }: Ed
           </div>
         </div>
 
-    
         <div className="text-4xl font-bold mb-6">Px</div>
 
-     
         <div className="mb-4">
-          <div>
-            <span className="font-semibold">Diagnosis: </span>
-            <span>{fields.diagnosis}</span>
-          </div>
+          <div className="font-semibold mb-2">Diagnosis:</div>
+          <ul className="list-disc list-inside space-y-1">
+            {Array.isArray(diagnosis) && diagnosis.length > 0 ? (
+              diagnosis.map((d, i) => (
+                <li key={i}>
+                  {d.diagnosis} — {d.severity} {d.notes}
+                </li>
+              ))
+            ) : (
+              <li>No prescribed drugs</li>
+            )}
+          </ul>
           <div>
             <span className="font-semibold">Examination: </span>
-            <span>{fields.examination}</span>
+            <span className="underline">{fields.examination}</span>
           </div>
         </div>
 
@@ -120,24 +135,25 @@ export function ViewFullPrescription({ patient: prescription, onOpenChange }: Ed
           <div>{fields.recommendation}</div>
         </div>
 
-       
         <div className="flex justify-end mt-8">
           <div className="text-center">
             <div className="border-t border-black w-32"></div>
             <div>Dr. {fields.addedBy}</div>
             <div>{fields.field}</div>
-           
-            <div>100-234-1431</div>
+
+            <div>{fields.doctorId}</div>
           </div>
         </div>
       </div>
 
-    
       <div className="flex justify-center mt-4">
-        <Button onClick={handleDownloadImage} className="!bg-blue-600 !text-white">
+        <Button
+          onClick={handleDownloadImage}
+          className="!bg-orange-500 !text-white"
+        >
           Download as Image
         </Button>
       </div>
     </div>
-  )
+  );
 }

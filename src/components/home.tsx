@@ -87,7 +87,7 @@ export function Homepage() {
 
   return (
     <div className="min-h-screen bg-[#00a896] p-6">
-      <Card className="bg-[#00a896] border-0 shadow-none mb-8">
+      {/* <Card className="bg-[#00a896] border-0 shadow-none mb-8">
         <CardContent className="flex items-center justify-center mt-4">
           <Carousel
             plugins={[plugin.current]}
@@ -118,7 +118,7 @@ export function Homepage() {
             </CarouselContent>
           </Carousel>
         </CardContent>
-      </Card>
+      </Card> */}
 
       <Card className="bg-[#00a896] border-0 shadow-none">
         <CardHeader>

@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useIsMobile } from "@/hooks/use-mobile"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Drawer,
   DrawerClose,
@@ -16,32 +16,32 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
 
-import type { Patient } from "./medical_records"
-import { ViewFullPatient } from "./view-full-records"
+import type { Patient } from "./medical_records";
+import { ViewFullPatient } from "./view-full-records";
 
 type FullRecordsDrawerProps = {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  patient: Patient
-}
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  patient: Patient;
+};
 
 export function FullRecordsDrawer({
   open,
   onOpenChange,
   patient: patient,
 }: FullRecordsDrawerProps) {
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
 
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent>
+        <DrawerContent className="!max-h-[85vh] !overflow-y-auto">
           <DrawerHeader>
             <DrawerTitle>Full Patient Details</DrawerTitle>
           </DrawerHeader>
-          <div className="p-4">
+          <div className="p-0">
             <ViewFullPatient
               open={open}
               onOpenChange={onOpenChange}
@@ -55,7 +55,7 @@ export function FullRecordsDrawer({
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    )
+    );
   }
 
   return (
@@ -71,5 +71,5 @@ export function FullRecordsDrawer({
         />
       </DialogContent>
     </Dialog>
-  )
+  );
 }

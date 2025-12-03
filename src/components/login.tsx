@@ -61,7 +61,7 @@ export function Login() {
   }
 
   return (
-    <div className="w-screen max-w-md text-2xl">
+    <div className="w-screen max-w-md text">
       <form onSubmit={handleLogin}>
         <FieldGroup>
           <FieldSet>
@@ -94,7 +94,7 @@ export function Login() {
           </FieldSet>
 
           <Field orientation="horizontal">
-            <Button type="submit" className="!bg-blue-400 !text-white w-full">
+            <Button type="submit" className="!bg-blue-400 !text-white ">
               Login
             </Button>
           </Field>
